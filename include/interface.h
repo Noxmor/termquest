@@ -6,8 +6,11 @@
 
 typedef struct Interface
 {
+    const char* name;
     Command* commands;
     usize commands_count;
 } Interface;
+
+void interface_init(Interface* inf, const char* name);
 
 #endif
