@@ -1,0 +1,6 @@
+# Binaries
+bin/
+bin-int/
+
+# cbrew
+.cbrew/
