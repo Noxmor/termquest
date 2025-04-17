@@ -10,6 +10,7 @@ static int running = 0;
 typedef struct GameState
 {
     Stack inf_stack;
+    usize command_index;
 } GameState;
 
 static GameState game_state;
@@ -38,7 +39,14 @@ static void interface_render(const Interface* inf)
     for (usize i = 0; i < inf->commands_count; ++i)
     {
         Command* cmd = &inf->commands[i];
-        render_string(0, i, cmd->display_key);
+        usize offset = 0;
+        if (game_state.command_index == i)
+        {
+            offset = 2;
+            render_string(0, i, "> ");
+        }
+
+        render_string(offset, i, cmd->display_key);
     }
 }
 
@@ -55,6 +63,23 @@ static Interface* termquest_peek_interface(void)
 Interface* termquest_pop_interface(void)
 {
     return stack_pop(&game_state.inf_stack);
+}
+
+static void termquest_interface_move_up(void)
+{
+    if (game_state.command_index > 0)
+    {
+        --game_state.command_index;
+    }
+}
+
+static void termquest_interface_move_down(void)
+{
+    Interface* inf = termquest_peek_interface();
+    if (game_state.command_index + 1 < inf->commands_count)
+    {
+        ++game_state.command_index;
+    }
 }
 
 void termquest_run(void)
@@ -86,6 +111,18 @@ void termquest_run(void)
                 if (event.key == TB_KEY_ESC)
                 {
                     termquest_quit();
+                }
+                else if (event.key == TB_KEY_ARROW_UP)
+                {
+                    termquest_interface_move_up();
+                }
+                else if (event.key == TB_KEY_ARROW_DOWN)
+                {
+                    termquest_interface_move_down();
+                }
+                else if (event.key == TB_KEY_ENTER)
+                {
+                    // TODO: Execute command
                 }
 
                 break;
