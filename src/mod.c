@@ -17,9 +17,26 @@ static void mod_register_interface(Mod* mod, lua_State* L)
     sprintf(name, "%s:%s", mod->name, internal_name);
     lua_pop(L, 1);
 
-    Interface* inf = interface_create(name, 0);
-    // TODO: Create commands
+    lua_getfield(L, -2, "commands");
+    lua_len(L, -1);
+    usize commands_count = lua_tointeger(L, -1);
+    lua_pop(L, 2);
+
+    Interface* inf = interface_create(name, commands_count);
     interface_registry_insert(inf);
+
+    lua_getfield(L, -2, "commands");
+    lua_pushnil(L);
+    usize i = 0;
+    while (lua_next(L, -2) != 0)
+    {
+        lua_getfield(L, -1, "name");
+        const char* name = strdup(luaL_checkstring(L, -1));
+        Command* cmd = interface_get_command(inf, i++);
+        cmd->display_key = name;
+        lua_pop(L, 2);
+    }
+    lua_pop(L, 1);
 
     lua_getfield(L, -2, "active");
 
@@ -43,7 +60,7 @@ static int data_extend(lua_State* L)
     }
 
     lua_pushnil(L);
-    while (lua_next(L, 2) != 0)
+    while (lua_next(L, -2) != 0)
     {
         lua_getfield(L, -1, "type");
         const char* type = luaL_checkstring(L, -1);
