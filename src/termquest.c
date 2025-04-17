@@ -46,7 +46,7 @@ void termquest_run(void)
 
     termquest_init();
 
-    Interface* main_menu = interface_create("main-menu", 2);
+    Interface* main_menu = interface_create("main-menu", 1);
     Command* cmd = interface_get_command(main_menu, 0);
     cmd->display_key = "CMD_QUIT";
 
