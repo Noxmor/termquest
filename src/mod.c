@@ -1,5 +1,5 @@
 #include "mod.h"
-#include "interface.h"
+#include "prototype_registry.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -16,7 +16,9 @@ static void mod_register_interface(Mod* mod, lua_State* L)
     sprintf(name, "%s:%s", mod->name, internal_name);
     lua_pop(L, 1);
 
-    // TODO: Register interface
+    Interface* inf = interface_create(name, 0);
+    // TODO: Create commands
+    interface_registry_insert(inf);
 }
 
 static int data_extend(lua_State* L)
