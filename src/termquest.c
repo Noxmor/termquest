@@ -1,6 +1,6 @@
 #include "termquest.h"
-#include "interface.h"
 #include "mod_list.h"
+#include "stack.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -8,9 +8,17 @@
 
 static int running = 0;
 
+typedef struct GameState
+{
+    Stack inf_stack;
+} GameState;
+
+static GameState game_state;
+
 static void termquest_init(void)
 {
     tb_init();
+    stack_init(&game_state.inf_stack);
 }
 
 static void termquest_shutdown(void)
@@ -33,6 +41,16 @@ static void interface_render(const Interface* inf)
         Command* cmd = &inf->commands[i];
         render_string(0, i, cmd->display_key);
     }
+}
+
+void termquest_push_interface(Interface* inf)
+{
+    stack_push(&game_state.inf_stack, inf);
+}
+
+Interface* termquest_pop_interface(void)
+{
+    return stack_pop(&game_state.inf_stack);
 }
 
 void termquest_run(void)
