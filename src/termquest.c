@@ -46,12 +46,12 @@ void termquest_run(void)
 
     termquest_init();
 
-    Interface main_menu;
-    main_menu.commands_count = 1;
-    main_menu.commands = malloc(sizeof(Command) * main_menu.commands_count);
-    main_menu.commands[0].display_key = "CMD_QUIT";
+    Interface* main_menu = interface_create("main-menu");
+    main_menu->commands_count = 1;
+    main_menu->commands = malloc(sizeof(Command) * main_menu->commands_count);
+    main_menu->commands[0].display_key = "CMD_QUIT";
 
-    Interface* active_inf = &main_menu;
+    Interface* active_inf = main_menu;
     struct tb_event event;
     running = 1;
 

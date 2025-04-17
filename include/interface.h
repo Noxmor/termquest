@@ -11,6 +11,6 @@ typedef struct Interface
     usize commands_count;
 } Interface;
 
-void interface_init(Interface* inf, const char* name);
+Interface* interface_create(const char* name);
 
 #endif

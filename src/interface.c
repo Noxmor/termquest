@@ -1,8 +1,14 @@
 #include "interface.h"
 
-void interface_init(Interface* inf, const char* name)
+#include <stdlib.h>
+
+Interface* interface_create(const char* name)
 {
+    Interface* inf = malloc(sizeof(Interface));
+
     inf->name = name;
     inf->commands = NULL;
     inf->commands_count = 0;
+
+    return inf;
 }
