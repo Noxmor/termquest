@@ -5,6 +5,7 @@ data:extend({
         commands = {
             { name = "CMD_OPTIONS" },
             { name = "CMD_QUIT" },
-        }
+        },
+        active = true
     }
 })
