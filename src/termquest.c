@@ -3,7 +3,6 @@
 #include "stack.h"
 
 #include <string.h>
-#include <stdlib.h>
 #include <termbox.h>
 
 static int running = 0;
@@ -48,6 +47,11 @@ void termquest_push_interface(Interface* inf)
     stack_push(&game_state.inf_stack, inf);
 }
 
+static Interface* termquest_peek_interface(void)
+{
+    return stack_peek(&game_state.inf_stack);
+}
+
 Interface* termquest_pop_interface(void)
 {
     return stack_pop(&game_state.inf_stack);
@@ -55,6 +59,8 @@ Interface* termquest_pop_interface(void)
 
 void termquest_run(void)
 {
+    termquest_init();
+
     // TODO: Refactor
     ModList mod_list;
 
@@ -62,18 +68,13 @@ void termquest_run(void)
     mod_list_scan(&mod_list);
     mod_list_load(&mod_list);
 
-    termquest_init();
-
-    Interface* main_menu = interface_create("main-menu", 1);
-    Command* cmd = interface_get_command(main_menu, 0);
-    cmd->display_key = "CMD_QUIT";
-
-    Interface* active_inf = main_menu;
     struct tb_event event;
     running = 1;
 
     while (running)
     {
+        Interface* active_inf = termquest_peek_interface();
+
         tb_clear();
         interface_render(active_inf);
         tb_present();
