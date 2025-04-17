@@ -1,4 +1,5 @@
 #include "mod.h"
+#include "termquest.h"
 #include "prototype_registry.h"
 
 #include <stdlib.h>
@@ -19,6 +20,15 @@ static void mod_register_interface(Mod* mod, lua_State* L)
     Interface* inf = interface_create(name, 0);
     // TODO: Create commands
     interface_registry_insert(inf);
+
+    lua_getfield(L, -2, "active");
+
+    if (lua_isboolean(L, -1) && lua_toboolean(L, -1))
+    {
+        termquest_push_interface(inf);
+    }
+
+    lua_pop(L, 1);
 }
 
 static int data_extend(lua_State* L)
