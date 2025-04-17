@@ -11,6 +11,8 @@ typedef struct Interface
     usize commands_count;
 } Interface;
 
-Interface* interface_create(const char* name);
+Interface* interface_create(const char* name, usize commands_count);
+
+Command* interface_get_command(Interface* inf, usize index);
 
 #endif

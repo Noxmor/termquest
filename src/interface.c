@@ -2,13 +2,18 @@
 
 #include <stdlib.h>
 
-Interface* interface_create(const char* name)
+Interface* interface_create(const char* name, usize commands_count)
 {
     Interface* inf = malloc(sizeof(Interface));
 
     inf->name = name;
-    inf->commands = NULL;
-    inf->commands_count = 0;
+    inf->commands_count = commands_count;
+    inf->commands = malloc(sizeof(Command) * inf->commands_count);
 
     return inf;
+}
+
+Command* interface_get_command(Interface* inf, usize index)
+{
+    return &inf->commands[index];
 }
