@@ -12,7 +12,7 @@ static void mod_register_interface(Mod* mod, lua_State* L)
 {
     lua_getfield(L, -2, "name");
     const char* internal_name = luaL_checkstring(L, -1);
-    const char* name = malloc(sizeof(char) * (strlen(mod->name) + 1 + strlen(internal_name) + 1));
+    char* name = malloc(sizeof(char) * (strlen(mod->name) + 1 + strlen(internal_name) + 1));
     sprintf(name, "%s:%s", mod->name, internal_name);
     lua_pop(L, 1);
 
