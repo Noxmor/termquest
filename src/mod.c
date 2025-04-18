@@ -78,6 +78,19 @@ static int data_extend(lua_State* L)
     return 0;
 }
 
+static int script_on_event(lua_State* L)
+{
+    // TODO: Implement
+    return 0;
+}
+
+static int game_quit(lua_State* L)
+{
+    termquest_quit();
+
+    return 0;
+}
+
 void mod_init(Mod* mod, const char* filepath)
 {
     mod->filepath = filepath;
@@ -91,12 +104,15 @@ void mod_init(Mod* mod, const char* filepath)
         mod->name = mod->filepath;
     }
 
+    mod->data = luaL_newstate();
+    mod->script = luaL_newstate();
+
     mod->active = TQ_FALSE;
 }
 
 void mod_load(Mod* mod)
 {
-    lua_State* L = luaL_newstate();
+    lua_State* L = mod->data;
     luaL_openlibs(L);
 
     lua_newtable(L);
@@ -109,6 +125,26 @@ void mod_load(Mod* mod)
 
     char buffer[PATH_MAX];
     sprintf(buffer, "%s/data.lua", mod->filepath);
+
+    if (luaL_dofile(L, buffer) != LUA_OK)
+    {
+        fprintf(stderr, "Error loading mod: %s\n", lua_tostring(L, -1));
+        lua_close(L);
+    }
+
+    L = mod->script;
+    luaL_openlibs(L);
+    lua_newtable(L);
+    lua_pushcfunction(L, &script_on_event);
+    lua_setfield(L, -2, "on_event");
+    lua_setglobal(L, "script");
+
+    lua_newtable(L);
+    lua_pushcfunction(L, &game_quit);
+    lua_setfield(L, -2, "quit");
+    lua_setglobal(L, "game");
+
+    sprintf(buffer, "%s/script.lua", mod->filepath);
 
     if (luaL_dofile(L, buffer) != LUA_OK)
     {

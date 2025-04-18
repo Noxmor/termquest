@@ -3,10 +3,14 @@
 
 #include "types.h"
 
+typedef struct lua_State lua_State;
+
 typedef struct Mod
 {
     const char* name;
     const char* filepath;
+    lua_State* data;
+    lua_State* script;
     b8 active;
 } Mod;
 
