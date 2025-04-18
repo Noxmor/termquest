@@ -16,4 +16,6 @@ void mod_list_scan(ModList* mod_list);
 
 void mod_list_load(ModList* mod_list);
 
+void mod_list_execute_command(ModList* mod_list, const char* cmd_name);
+
 #endif

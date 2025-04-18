@@ -13,12 +13,19 @@ typedef struct GameState
     usize command_index;
 } GameState;
 
+static ModList mod_list;
+
 static GameState game_state;
 
 static void termquest_init(void)
 {
     tb_init();
     stack_init(&game_state.inf_stack);
+
+    mod_list_init(&mod_list);
+    mod_list_scan(&mod_list);
+    mod_list_load(&mod_list);
+
 }
 
 static void termquest_shutdown(void)
@@ -82,16 +89,15 @@ static void termquest_interface_move_down(void)
     }
 }
 
+void termquest_execute_command(void)
+{
+    Interface* inf = termquest_peek_interface();
+    mod_list_execute_command(&mod_list, inf->commands[game_state.command_index].display_key);
+}
+
 void termquest_run(void)
 {
     termquest_init();
-
-    // TODO: Refactor
-    ModList mod_list;
-
-    mod_list_init(&mod_list);
-    mod_list_scan(&mod_list);
-    mod_list_load(&mod_list);
 
     struct tb_event event;
     running = 1;
@@ -122,7 +128,7 @@ void termquest_run(void)
                 }
                 else if (event.key == TB_KEY_ENTER)
                 {
-                    // TODO: Execute command
+                    termquest_execute_command();
                 }
 
                 break;

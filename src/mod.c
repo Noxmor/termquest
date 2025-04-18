@@ -116,3 +116,8 @@ void mod_load(Mod* mod)
         lua_close(L);
     }
 }
+
+void mod_execute_command(Mod* mod, const char* cmd_name)
+{
+    // TODO: Implement
+}
