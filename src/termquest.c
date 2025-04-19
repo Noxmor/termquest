@@ -123,6 +123,7 @@ static void interface_render(const Interface* inf)
 
 void termquest_push_interface(Interface* inf)
 {
+    game_state.cursor_index = game_state.command_index = 0;
     stack_push(&game_state.inf_stack, inf);
 }
 
@@ -133,6 +134,7 @@ static Interface* termquest_peek_interface(void)
 
 Interface* termquest_pop_interface(void)
 {
+    game_state.cursor_index = game_state.command_index = 0;
     return stack_pop(&game_state.inf_stack);
 }
 
