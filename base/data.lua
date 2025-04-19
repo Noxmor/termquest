@@ -7,5 +7,12 @@ data:extend({
             { name = "CMD_QUIT" },
         },
         active = true
-    }
+    },
+    {
+        type = "interface",
+        name = "options-menu",
+        commands = {
+            { name = "CMD_BACK" },
+        },
+    },
 })
