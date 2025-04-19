@@ -20,6 +20,11 @@ void list_add(List* list, void* item)
     list->items[list->size++] = item;
 }
 
+void* list_get(const List* list, usize index)
+{
+    return list->items[index];
+}
+
 usize list_size(const List* list)
 {
     return list->size;
