@@ -5,6 +5,8 @@
 #include <string.h>
 #include <termbox.h>
 
+#define TQ_PROMPT_BUFFER_CAPACITY 128
+
 static int running = 0;
 
 typedef struct GameState
@@ -13,6 +15,7 @@ typedef struct GameState
     usize command_box_height;
     usize margin_x;
     usize margin_y;
+    char prompt_buffer[TQ_PROMPT_BUFFER_CAPACITY];
 } GameState;
 
 static ModList mod_list;
@@ -167,6 +170,47 @@ void termquest_execute_command(void)
 {
     Interface* inf = termquest_peek_interface();
     mod_list_execute_command(&mod_list, inf->commands[inf->command_index].display_key);
+}
+
+static void prompt_user(const char* message)
+{
+    tb_clear();
+    render_string(0, 0, message);
+    tb_present();
+
+    memset(game_state.prompt_buffer, '\0', sizeof(char) * TQ_PROMPT_BUFFER_CAPACITY);
+
+    usize offset = strlen(message);
+    usize index = 0;
+    b8 done = TQ_FALSE;
+    while (!done)
+    {
+        struct tb_event event;
+        if (tb_poll_event(&event) == TB_EVENT_KEY)
+        {
+            if (event.key == TB_KEY_ENTER)
+            {
+                done = TQ_TRUE;
+                game_state.prompt_buffer[index] = '\0';
+            }
+            else if (event.key == TB_KEY_BACKSPACE || event.key == TB_KEY_BACKSPACE2)
+            {
+                if (index > 0)
+                {
+                    --index;
+                }
+
+                tb_change_cell(offset + index, 0, ' ', TB_WHITE, TB_BLACK);
+                tb_present();
+            }
+            else
+            {
+                game_state.prompt_buffer[index] = event.ch;
+                tb_change_cell(offset + index++, 0, event.ch, TB_WHITE, TB_BLACK);
+                tb_present();
+            }
+        }
+    }
 }
 
 void termquest_run(void)
