@@ -1,4 +1,7 @@
 local on_command_executed  = function(event)
+    if event.name == "CMD_OPTIONS" then
+        game.push_interface("options-menu")
+    end
     if event.name == "CMD_QUIT" then
         game.quit()
     end
