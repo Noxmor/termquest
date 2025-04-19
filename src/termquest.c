@@ -159,7 +159,6 @@ static void termquest_interface_move_down(void)
             ++game_state.cursor_index;
         }
     }
-
 }
 
 void termquest_execute_command(void)
