@@ -1,7 +1,7 @@
 local on_command_executed  = function(event)
     if event.name == "CMD_QUIT" then
-        game:quit()
+        game.quit()
     end
 end
 
-script:on_event("on_command_executed", on_command_executed)
+script.on_event("on_command_executed", on_command_executed)
