@@ -13,6 +13,8 @@ typedef struct GameState
     usize command_index;
     usize cursor_index;
     usize command_box_height;
+    usize margin_x;
+    usize margin_y;
 } GameState;
 
 static ModList mod_list;
@@ -28,6 +30,8 @@ static void termquest_init(void)
     mod_list_scan(&mod_list);
     mod_list_load(&mod_list);
 
+    game_state.margin_x = 4;
+    game_state.margin_y = 4;
     game_state.command_box_height = 8;
 }
 
@@ -46,50 +50,48 @@ static void render_string(i32 x, i32 y, const char* str)
 
 static void interface_render(const Interface* inf)
 {
-    usize margin_x = 10;
-    usize margin_y = 10;
-    usize width = tb_width() - margin_x * 2;
+    usize width = tb_width() - game_state.margin_x * 2;
 
-    usize y = margin_y;
-    tb_change_cell(margin_x, y, 0x250C, TB_WHITE, TB_BLACK);
-    tb_change_cell(margin_x + width - 1, y, 0x2510, TB_WHITE, TB_BLACK);
+    usize y = game_state.margin_y;
+    tb_change_cell(game_state.margin_x, y, 0x250C, TB_WHITE, TB_BLACK);
+    tb_change_cell(game_state.margin_x + width - 1, y, 0x2510, TB_WHITE, TB_BLACK);
 
     for (usize i = 2; i < width; ++i)
     {
-        tb_change_cell(margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
+        tb_change_cell(game_state.margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
     }
 
     ++y;
 
-    tb_change_cell(margin_x, y, 0x2502, TB_WHITE, TB_BLACK);
-    tb_change_cell(margin_x + width - 1, y, 0x2502, TB_WHITE, TB_BLACK);
+    tb_change_cell(game_state.margin_x, y, 0x2502, TB_WHITE, TB_BLACK);
+    tb_change_cell(game_state.margin_x + width - 1, y, 0x2502, TB_WHITE, TB_BLACK);
 
     usize name_offset = width / 2 - strlen(inf->name) / 2;
-    render_string(margin_x + name_offset, y, inf->name);
+    render_string(game_state.margin_x + name_offset, y, inf->name);
 
 
     ++y;
 
-    tb_change_cell(margin_x, y, 0x251C, TB_WHITE, TB_BLACK);
-    tb_change_cell(margin_x + width - 1, y, 0x2524, TB_WHITE, TB_BLACK);
+    tb_change_cell(game_state.margin_x, y, 0x251C, TB_WHITE, TB_BLACK);
+    tb_change_cell(game_state.margin_x + width - 1, y, 0x2524, TB_WHITE, TB_BLACK);
 
     for (usize i = 2; i < width; ++i)
     {
-        tb_change_cell(margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
+        tb_change_cell(game_state.margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
     }
 
-    while (++y < tb_height() - margin_y - 1 - game_state.command_box_height)
+    while (++y < tb_height() - game_state.margin_y - 1 - game_state.command_box_height)
     {
-        tb_change_cell(margin_x, y, 0x2502, TB_WHITE, TB_BLACK);
-        tb_change_cell(margin_x + width - 1, y, 0x2502, TB_WHITE, TB_BLACK);
+        tb_change_cell(game_state.margin_x, y, 0x2502, TB_WHITE, TB_BLACK);
+        tb_change_cell(game_state.margin_x + width - 1, y, 0x2502, TB_WHITE, TB_BLACK);
     }
 
-    tb_change_cell(margin_x, y, 0x251C, TB_WHITE, TB_BLACK);
-    tb_change_cell(margin_x + width - 1, y, 0x2524, TB_WHITE, TB_BLACK);
+    tb_change_cell(game_state.margin_x, y, 0x251C, TB_WHITE, TB_BLACK);
+    tb_change_cell(game_state.margin_x + width - 1, y, 0x2524, TB_WHITE, TB_BLACK);
 
     for (usize i = 2; i < width; ++i)
     {
-        tb_change_cell(margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
+        tb_change_cell(game_state.margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
     }
 
     ++y;
@@ -97,25 +99,25 @@ static void interface_render(const Interface* inf)
     i32 offset = game_state.command_index - game_state.cursor_index;
     for (usize i = 0; i < game_state.command_box_height; ++i)
     {
-        tb_change_cell(margin_x, y + i, 0x2502, TB_WHITE, TB_BLACK);
-        tb_change_cell(margin_x + width - 1, y + i, 0x2502, TB_WHITE, TB_BLACK);
+        tb_change_cell(game_state.margin_x, y + i, 0x2502, TB_WHITE, TB_BLACK);
+        tb_change_cell(game_state.margin_x + width - 1, y + i, 0x2502, TB_WHITE, TB_BLACK);
 
         if (offset + i >= 0 && offset + i < inf->commands_count)
         {
             Command* cmd = interface_get_command(inf, offset + i);
-            render_string(margin_x + 4, y + i, cmd->display_key);
+            render_string(game_state.margin_x + 4, y + i, cmd->display_key);
         }
     }
 
-    render_string(margin_x + 2, y + game_state.cursor_index, "> ");
+    render_string(game_state.margin_x + 2, y + game_state.cursor_index, "> ");
 
-    y = tb_height() - margin_y;
-    tb_change_cell(margin_x, y, 0x2514, TB_WHITE, TB_BLACK);
-    tb_change_cell(margin_x + width - 1, y, 0x2518, TB_WHITE, TB_BLACK);
+    y = tb_height() - game_state.margin_y;
+    tb_change_cell(game_state.margin_x, y, 0x2514, TB_WHITE, TB_BLACK);
+    tb_change_cell(game_state.margin_x + width - 1, y, 0x2518, TB_WHITE, TB_BLACK);
 
     for (usize i = 2; i < width; ++i)
     {
-        tb_change_cell(margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
+        tb_change_cell(game_state.margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
     }
 }
 
