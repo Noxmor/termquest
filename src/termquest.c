@@ -43,17 +43,37 @@ static void render_string(i32 x, i32 y, const char* str)
 
 static void interface_render(const Interface* inf)
 {
+    usize y = 0;
+    tb_change_cell(0, y, 0x250C, TB_WHITE, TB_BLACK);
+    tb_change_cell(99, y, 0x2510, TB_WHITE, TB_BLACK);
+
+    for (usize x = 1; x < 99; ++x)
+    {
+        tb_change_cell(x, y, 0x2500, TB_WHITE, TB_BLACK);
+    }
+
     for (usize i = 0; i < inf->commands_count; ++i)
     {
+        tb_change_cell(0, i + 1, 0x2502, TB_WHITE, TB_BLACK);
+
         Command* cmd = &inf->commands[i];
-        usize offset = 0;
+
         if (game_state.command_index == i)
         {
-            offset = 2;
-            render_string(0, i, "> ");
+            render_string(2, i + 1, "> ");
         }
 
-        render_string(offset, i, cmd->display_key);
+        render_string(4, i + 1, cmd->display_key);
+        tb_change_cell(99, i + 1, 0x2502, TB_WHITE, TB_BLACK);
+    }
+
+    y = 1 + inf->commands_count;
+    tb_change_cell(0, y, 0x2514, TB_WHITE, TB_BLACK);
+    tb_change_cell(99, y, 0x2518, TB_WHITE, TB_BLACK);
+
+    for (usize x = 1; x < 99; ++x)
+    {
+        tb_change_cell(x, y, 0x2500, TB_WHITE, TB_BLACK);
     }
 }
 
