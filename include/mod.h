@@ -2,6 +2,7 @@
 #define TQ_MOD_H
 
 #include "types.h"
+#include "list.h"
 
 typedef struct lua_State lua_State;
 
@@ -11,6 +12,7 @@ typedef struct Mod
     const char* filepath;
     lua_State* data;
     lua_State* script;
+    List event_listeners;
     b8 active;
 } Mod;
 

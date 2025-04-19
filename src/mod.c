@@ -1,6 +1,7 @@
 #include "mod.h"
 #include "termquest.h"
 #include "prototype_registry.h"
+#include "event_listener.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -78,9 +79,40 @@ static int data_extend(lua_State* L)
     return 0;
 }
 
+static void mod_register_event_listener(Mod* mod, const char* event_name, int callback)
+{
+    EventListener* listener = event_listener_create(event_name, callback);
+    list_add(&mod->event_listeners, listener);
+}
+
 static int script_on_event(lua_State* L)
 {
-    // TODO: Implement
+    lua_getfield(L, LUA_REGISTRYINDEX, "mod");
+    Mod* mod = (Mod*)lua_touserdata(L, -1);
+    lua_pop(L, 1);
+
+    int args_count = lua_gettop(L);
+    if (args_count != 2)
+    {
+        return luaL_error(L, "Expected 2 arguments (string eventName, function callback), got %d", args_count);
+    }
+
+    const char *event_name = luaL_checkstring(L, 1);
+    luaL_checktype(L, 2, LUA_TFUNCTION);
+
+    int lua_func_ref = luaL_ref(L, LUA_REGISTRYINDEX);
+
+    if (lua_func_ref == LUA_REFNIL)
+    {
+         return luaL_error(L, "Could not store nil function reference for event '%s'", event_name);
+    }
+    else if (lua_func_ref == LUA_NOREF)
+    {
+          return luaL_error(L, "Could not create registry reference for event '%s' (no reference returned)", event_name);
+    }
+
+    mod_register_event_listener(mod, event_name, lua_func_ref);
+
     return 0;
 }
 
@@ -93,7 +125,7 @@ static int game_quit(lua_State* L)
 
 static int game_push_interface(lua_State* L)
 {
-    const char* name = lua_checkstring(L, -1);
+    const char* name = luaL_checkstring(L, -1);
     Interface* inf = interface_registry_find(name);
     termquest_push_interface(inf);
 
@@ -115,6 +147,8 @@ void mod_init(Mod* mod, const char* filepath)
 
     mod->data = luaL_newstate();
     mod->script = luaL_newstate();
+
+    list_init(&mod->event_listeners);
 
     mod->active = TQ_FALSE;
 }
@@ -155,6 +189,9 @@ void mod_load(Mod* mod)
     lua_setfield(L, -2, "push_interface");
     lua_setglobal(L, "game");
 
+    lua_pushlightuserdata(L, mod);
+    lua_setfield(L, LUA_REGISTRYINDEX, "mod");
+
     sprintf(buffer, "%s/script.lua", mod->filepath);
 
     if (luaL_dofile(L, buffer) != LUA_OK)
@@ -166,5 +203,17 @@ void mod_load(Mod* mod)
 
 void mod_execute_command(Mod* mod, const char* cmd_name)
 {
-    // TODO: Implement
+    for (usize i = 0; i < list_size(&mod->event_listeners); ++i)
+    {
+        EventListener* listener = list_get(&mod->event_listeners, i);
+        if (strcmp(listener->event_name, "on_command_executed") == 0)
+        {
+            lua_State* L = mod->script;
+            lua_rawgeti(L, LUA_REGISTRYINDEX, listener->callback);
+            lua_newtable(L);
+            lua_pushstring(L, cmd_name);
+            lua_setfield(L, -2, "name");
+            lua_pcall(L, 1, 0, 0);
+        }
+    }
 }
