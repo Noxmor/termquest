@@ -91,6 +91,15 @@ static int game_quit(lua_State* L)
     return 0;
 }
 
+static int game_push_interface(lua_State* L)
+{
+    const char* name = lua_checkstring(L, -1);
+    Interface* inf = interface_registry_find(name);
+    termquest_push_interface(inf);
+
+    return 0;
+}
+
 void mod_init(Mod* mod, const char* filepath)
 {
     mod->filepath = filepath;
@@ -142,6 +151,8 @@ void mod_load(Mod* mod)
     lua_newtable(L);
     lua_pushcfunction(L, &game_quit);
     lua_setfield(L, -2, "quit");
+    lua_pushcfunction(L, &game_push_interface);
+    lua_setfield(L, -2, "push_interface");
     lua_setglobal(L, "game");
 
     sprintf(buffer, "%s/script.lua", mod->filepath);
