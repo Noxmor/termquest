@@ -63,7 +63,9 @@ static void interface_render(const Interface* inf)
 
     tb_change_cell(margin_x, y, 0x2502, TB_WHITE, TB_BLACK);
     tb_change_cell(margin_x + width - 1, y, 0x2502, TB_WHITE, TB_BLACK);
-    render_string(margin_x + 2, y, inf->name);
+
+    usize name_offset = width / 2 - strlen(inf->name) / 2;
+    render_string(margin_x + name_offset, y, inf->name);
 
 
     ++y;
