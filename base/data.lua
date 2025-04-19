@@ -3,6 +3,7 @@ data:extend({
         type = "interface",
         name = "main-menu",
         commands = {
+            { name = "CMD_NEW_GAME" },
             { name = "CMD_OPTIONS" },
             { name = "CMD_QUIT" },
         },
@@ -11,6 +12,13 @@ data:extend({
     {
         type = "interface",
         name = "options-menu",
+        commands = {
+            { name = "CMD_BACK" },
+        },
+    },
+    {
+        type = "interface",
+        name = "new-game",
         commands = {
             { name = "CMD_BACK" },
         },
