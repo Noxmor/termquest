@@ -9,6 +9,8 @@ typedef struct Interface
     const char* name;
     Command* commands;
     usize commands_count;
+    usize command_index;
+    usize cursor_index;
 } Interface;
 
 Interface* interface_create(const char* name, usize commands_count);

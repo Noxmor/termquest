@@ -9,6 +9,8 @@ Interface* interface_create(const char* name, usize commands_count)
     inf->name = name;
     inf->commands_count = commands_count;
     inf->commands = malloc(sizeof(Command) * inf->commands_count);
+    inf->command_index = 0;
+    inf->cursor_index = 0;
 
     return inf;
 }

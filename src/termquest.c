@@ -10,8 +10,6 @@ static int running = 0;
 typedef struct GameState
 {
     Stack inf_stack;
-    usize command_index;
-    usize cursor_index;
     usize command_box_height;
     usize margin_x;
     usize margin_y;
@@ -96,7 +94,7 @@ static void interface_render(const Interface* inf)
 
     ++y;
 
-    i32 offset = game_state.command_index - game_state.cursor_index;
+    i32 offset = inf->command_index - inf->cursor_index;
     for (usize i = 0; i < game_state.command_box_height; ++i)
     {
         tb_change_cell(game_state.margin_x, y + i, 0x2502, TB_WHITE, TB_BLACK);
@@ -109,7 +107,7 @@ static void interface_render(const Interface* inf)
         }
     }
 
-    render_string(game_state.margin_x + 2, y + game_state.cursor_index, "> ");
+    render_string(game_state.margin_x + 2, y + inf->cursor_index, "> ");
 
     y = tb_height() - game_state.margin_y;
     tb_change_cell(game_state.margin_x, y, 0x2514, TB_WHITE, TB_BLACK);
@@ -123,7 +121,6 @@ static void interface_render(const Interface* inf)
 
 void termquest_push_interface(Interface* inf)
 {
-    game_state.cursor_index = game_state.command_index = 0;
     stack_push(&game_state.inf_stack, inf);
 }
 
@@ -134,33 +131,34 @@ static Interface* termquest_peek_interface(void)
 
 Interface* termquest_pop_interface(void)
 {
-    game_state.cursor_index = game_state.command_index = 0;
     return stack_pop(&game_state.inf_stack);
 }
 
 static void termquest_interface_move_up(void)
 {
-    if (game_state.command_index > 0)
+    Interface* inf = termquest_peek_interface();
+
+    if (inf->command_index > 0)
     {
-        --game_state.command_index;
+        --inf->command_index;
     }
 
-    if (game_state.cursor_index > 0)
+    if (inf->cursor_index > 0)
     {
-        --game_state.cursor_index;
+        --inf->cursor_index;
     }
 }
 
 static void termquest_interface_move_down(void)
 {
     Interface* inf = termquest_peek_interface();
-    if (game_state.command_index + 1 < inf->commands_count)
+    if (inf->command_index + 1 < inf->commands_count)
     {
-        ++game_state.command_index;
+        ++inf->command_index;
 
-        if (game_state.cursor_index + 1 < game_state.command_box_height)
+        if (inf->cursor_index + 1 < game_state.command_box_height)
         {
-            ++game_state.cursor_index;
+            ++inf->cursor_index;
         }
     }
 }
@@ -168,7 +166,7 @@ static void termquest_interface_move_down(void)
 void termquest_execute_command(void)
 {
     Interface* inf = termquest_peek_interface();
-    mod_list_execute_command(&mod_list, inf->commands[game_state.command_index].display_key);
+    mod_list_execute_command(&mod_list, inf->commands[inf->command_index].display_key);
 }
 
 void termquest_run(void)
