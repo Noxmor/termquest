@@ -52,22 +52,41 @@ static void interface_render(const Interface* inf)
         tb_change_cell(x, y, 0x2500, TB_WHITE, TB_BLACK);
     }
 
+    ++y;
+
+    tb_change_cell(0, y, 0x2502, TB_WHITE, TB_BLACK);
+    tb_change_cell(99, y, 0x2502, TB_WHITE, TB_BLACK);
+    render_string(2, y, "Interface Header");
+
+
+    ++y;
+
+    tb_change_cell(0, y, 0x251C, TB_WHITE, TB_BLACK);
+    tb_change_cell(99, y, 0x2524, TB_WHITE, TB_BLACK);
+
+    for (usize x = 1; x < 99; ++x)
+    {
+        tb_change_cell(x, y, 0x2500, TB_WHITE, TB_BLACK);
+    }
+
+    ++y;
+
     for (usize i = 0; i < inf->commands_count; ++i)
     {
-        tb_change_cell(0, i + 1, 0x2502, TB_WHITE, TB_BLACK);
+        tb_change_cell(0, i + y, 0x2502, TB_WHITE, TB_BLACK);
 
         Command* cmd = &inf->commands[i];
 
         if (game_state.command_index == i)
         {
-            render_string(2, i + 1, "> ");
+            render_string(2, i + y, "> ");
         }
 
-        render_string(4, i + 1, cmd->display_key);
-        tb_change_cell(99, i + 1, 0x2502, TB_WHITE, TB_BLACK);
+        render_string(4, i + y, cmd->display_key);
+        tb_change_cell(99, i + y, 0x2502, TB_WHITE, TB_BLACK);
     }
 
-    y = 1 + inf->commands_count;
+    y += inf->commands_count;
     tb_change_cell(0, y, 0x2514, TB_WHITE, TB_BLACK);
     tb_change_cell(99, y, 0x2518, TB_WHITE, TB_BLACK);
 
