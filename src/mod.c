@@ -147,6 +147,13 @@ static int game_push_interface(lua_State* L)
     return 0;
 }
 
+static int game_pop_interface(lua_State* L)
+{
+    termquest_pop_interface();
+
+    return 0;
+}
+
 void mod_init(Mod* mod, const char* filepath)
 {
     mod->filepath = filepath;
@@ -202,6 +209,8 @@ void mod_load(Mod* mod)
     lua_setfield(L, -2, "quit");
     lua_pushcfunction(L, &game_push_interface);
     lua_setfield(L, -2, "push_interface");
+    lua_pushcfunction(L, &game_pop_interface);
+    lua_setfield(L, -2, "pop_interface");
     lua_setglobal(L, "game");
 
     lua_pushlightuserdata(L, mod);
