@@ -126,8 +126,23 @@ static int game_quit(lua_State* L)
 static int game_push_interface(lua_State* L)
 {
     const char* name = luaL_checkstring(L, -1);
-    Interface* inf = interface_registry_find(name);
-    termquest_push_interface(inf);
+    if (strchr(name, ':') == NULL)
+    {
+        lua_getfield(L, LUA_REGISTRYINDEX, "mod");
+        Mod* mod = (Mod*)lua_touserdata(L, -1);
+        lua_pop(L, 1);
+
+        char* canonical_name = malloc(sizeof(char) * (strlen(mod->name) + 1 + strlen(name) + 1));
+        sprintf(canonical_name, "%s:%s", mod->name, name);
+        Interface* inf = interface_registry_find(canonical_name);
+        free(canonical_name);
+        termquest_push_interface(inf);
+    }
+    else
+    {
+        Interface* inf = interface_registry_find(name);
+        termquest_push_interface(inf);
+    }
 
     return 0;
 }
