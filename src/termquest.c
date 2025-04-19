@@ -43,56 +43,61 @@ static void render_string(i32 x, i32 y, const char* str)
 
 static void interface_render(const Interface* inf)
 {
-    usize y = 0;
-    tb_change_cell(0, y, 0x250C, TB_WHITE, TB_BLACK);
-    tb_change_cell(99, y, 0x2510, TB_WHITE, TB_BLACK);
+    usize margin_x = 10;
+    usize margin_y = 10;
 
-    for (usize x = 1; x < 99; ++x)
+    usize width = tb_width() - margin_x * 2;
+
+    usize y = margin_y;
+    tb_change_cell(margin_x, y, 0x250C, TB_WHITE, TB_BLACK);
+    tb_change_cell(margin_x + width - 1, y, 0x2510, TB_WHITE, TB_BLACK);
+
+    for (usize i = 2; i < width; ++i)
     {
-        tb_change_cell(x, y, 0x2500, TB_WHITE, TB_BLACK);
+        tb_change_cell(margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
     }
 
     ++y;
 
-    tb_change_cell(0, y, 0x2502, TB_WHITE, TB_BLACK);
-    tb_change_cell(99, y, 0x2502, TB_WHITE, TB_BLACK);
-    render_string(2, y, "Interface Header");
+    tb_change_cell(margin_x, y, 0x2502, TB_WHITE, TB_BLACK);
+    tb_change_cell(margin_x + width - 1, y, 0x2502, TB_WHITE, TB_BLACK);
+    render_string(margin_x + 2, y, "Interface Header");
 
 
     ++y;
 
-    tb_change_cell(0, y, 0x251C, TB_WHITE, TB_BLACK);
-    tb_change_cell(99, y, 0x2524, TB_WHITE, TB_BLACK);
+    tb_change_cell(margin_x, y, 0x251C, TB_WHITE, TB_BLACK);
+    tb_change_cell(margin_x + width - 1, y, 0x2524, TB_WHITE, TB_BLACK);
 
-    for (usize x = 1; x < 99; ++x)
+    for (usize i = 2; i < width; ++i)
     {
-        tb_change_cell(x, y, 0x2500, TB_WHITE, TB_BLACK);
+        tb_change_cell(margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
     }
 
     ++y;
 
     for (usize i = 0; i < inf->commands_count; ++i)
     {
-        tb_change_cell(0, i + y, 0x2502, TB_WHITE, TB_BLACK);
+        tb_change_cell(margin_x, i + y, 0x2502, TB_WHITE, TB_BLACK);
 
         Command* cmd = &inf->commands[i];
 
         if (game_state.command_index == i)
         {
-            render_string(2, i + y, "> ");
+            render_string(margin_x + 2, i + y, "> ");
         }
 
-        render_string(4, i + y, cmd->display_key);
-        tb_change_cell(99, i + y, 0x2502, TB_WHITE, TB_BLACK);
+        render_string(margin_x + 4, i + y, cmd->display_key);
+        tb_change_cell(margin_x + width - 1, i + y, 0x2502, TB_WHITE, TB_BLACK);
     }
 
     y += inf->commands_count;
-    tb_change_cell(0, y, 0x2514, TB_WHITE, TB_BLACK);
-    tb_change_cell(99, y, 0x2518, TB_WHITE, TB_BLACK);
+    tb_change_cell(margin_x, y, 0x2514, TB_WHITE, TB_BLACK);
+    tb_change_cell(margin_x + width - 1, y, 0x2518, TB_WHITE, TB_BLACK);
 
-    for (usize x = 1; x < 99; ++x)
+    for (usize i = 2; i < width; ++i)
     {
-        tb_change_cell(x, y, 0x2500, TB_WHITE, TB_BLACK);
+        tb_change_cell(margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
     }
 }
 
