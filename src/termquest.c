@@ -61,7 +61,7 @@ static void interface_render(const Interface* inf)
 
     tb_change_cell(margin_x, y, 0x2502, TB_WHITE, TB_BLACK);
     tb_change_cell(margin_x + width - 1, y, 0x2502, TB_WHITE, TB_BLACK);
-    render_string(margin_x + 2, y, "Interface Header");
+    render_string(margin_x + 2, y, inf->name);
 
 
     ++y;
