@@ -166,6 +166,11 @@ static void termquest_interface_move_down(void)
     }
 }
 
+void termquest_create_save_file(const char* name)
+{
+    // TODO: Create save file and initialize new save
+}
+
 void termquest_execute_command(void)
 {
     Interface* inf = termquest_peek_interface();

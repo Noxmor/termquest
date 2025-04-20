@@ -9,6 +9,8 @@ void termquest_push_interface(Interface* inf);
 
 Interface* termquest_pop_interface(void);
 
+void termquest_create_save_file(const char* name);
+
 void termquest_quit(void);
 
 #endif

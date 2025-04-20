@@ -171,6 +171,13 @@ static int game_pop_interface(lua_State* L)
     return 0;
 }
 
+static int game_create_save_file(lua_State* L)
+{
+    termquest_create_save_file(luaL_checkstring(L, 1));
+
+    return 0;
+}
+
 void mod_init(Mod* mod, const char* filepath)
 {
     mod->filepath = filepath;
