@@ -76,11 +76,11 @@ void mod_list_load(ModList* mod_list)
     }
 }
 
-void mod_list_execute_command(ModList* mod_list, const char* cmd_name)
+void mod_list_execute_command(ModList* mod_list, const Command* cmd)
 {
     for (usize i = 0; i < mod_list->size; ++i)
     {
         Mod* mod = &mod_list->mods[i];
-        mod_execute_command(mod, cmd_name);
+        mod_execute_command(mod, cmd);
     }
 }

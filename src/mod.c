@@ -249,7 +249,7 @@ void mod_load(Mod* mod)
     }
 }
 
-void mod_execute_command(Mod* mod, const char* cmd_name)
+void mod_execute_command(Mod* mod, const Command* cmd)
 {
     for (usize i = 0; i < list_size(&mod->event_listeners); ++i)
     {
@@ -259,8 +259,10 @@ void mod_execute_command(Mod* mod, const char* cmd_name)
             lua_State* L = mod->script;
             lua_rawgeti(L, LUA_REGISTRYINDEX, listener->callback);
             lua_newtable(L);
-            lua_pushstring(L, cmd_name);
+            lua_pushstring(L, cmd->name);
             lua_setfield(L, -2, "name");
+            lua_pushstring(L, cmd->id);
+            lua_setfield(L, -2, "id");
             lua_pcall(L, 1, 0, 0);
         }
     }

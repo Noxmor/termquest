@@ -174,7 +174,7 @@ void termquest_create_save_file(const char* name)
 void termquest_execute_command(void)
 {
     Interface* inf = termquest_peek_interface();
-    mod_list_execute_command(&mod_list, inf->commands[inf->command_index].id);
+    mod_list_execute_command(&mod_list, interface_get_command(inf, inf->command_index));
 }
 
 static void prompt_user(const char* message)
