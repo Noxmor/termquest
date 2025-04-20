@@ -8,6 +8,9 @@ local on_command_executed  = function(event)
     if event.name == "CMD_OPTIONS" then
         game.push_interface("options-menu")
     end
+    if event.name == "CMD_SELECT_LANGUAGE" then
+        game.push_interface("language-menu")
+    end
     if event.name == "CMD_BACK" then
         game.pop_interface()
     end

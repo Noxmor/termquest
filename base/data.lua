@@ -14,6 +14,14 @@ data:extend({
         type = "interface",
         name = "options-menu",
         commands = {
+            { name = "CMD_SELECT_LANGUAGE" },
+            { name = "CMD_BACK" },
+        },
+    },
+    {
+        type = "interface",
+        name = "language-menu",
+        commands = {
             { name = "CMD_BACK" },
         },
     },
