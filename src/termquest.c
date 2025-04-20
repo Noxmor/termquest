@@ -106,7 +106,7 @@ static void interface_render(const Interface* inf)
         if (offset + i >= 0 && offset + i < inf->commands_count)
         {
             Command* cmd = interface_get_command(inf, offset + i);
-            render_string(game_state.margin_x + 4, y + i, cmd->display_key);
+            render_string(game_state.margin_x + 4, y + i, cmd->name);
         }
     }
 
@@ -169,7 +169,7 @@ static void termquest_interface_move_down(void)
 void termquest_execute_command(void)
 {
     Interface* inf = termquest_peek_interface();
-    mod_list_execute_command(&mod_list, inf->commands[inf->command_index].display_key);
+    mod_list_execute_command(&mod_list, inf->commands[inf->command_index].id);
 }
 
 static void prompt_user(const char* message)

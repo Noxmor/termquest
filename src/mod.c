@@ -31,11 +31,28 @@ static void mod_register_interface(Mod* mod, lua_State* L)
     usize i = 0;
     while (lua_next(L, -2) != 0)
     {
+        Command* cmd = interface_get_command(inf, i++);
+
         lua_getfield(L, -1, "name");
         const char* name = strdup(luaL_checkstring(L, -1));
-        Command* cmd = interface_get_command(inf, i++);
-        cmd->display_key = name;
-        lua_pop(L, 2);
+        lua_pop(L, 1);
+
+        lua_getfield(L, -1, "id");
+        const char* id = NULL;
+        if (!lua_isnil(L, -1))
+        {
+            id = strdup(luaL_checkstring(L, -1));
+        }
+        else
+        {
+            id = strdup(name);
+        }
+
+        command_init(cmd, name, id);
+
+        lua_pop(L, 1);
+
+        lua_pop(L, 1);
     }
     lua_pop(L, 1);
 

@@ -3,7 +3,10 @@
 
 typedef struct Command
 {
-    const char* display_key;
+    const char* name;
+    const char* id;
 } Command;
+
+void command_init(Command* cmd, const char* name, const char* id);
 
 #endif
