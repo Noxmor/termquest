@@ -19,4 +19,11 @@ local on_command_executed  = function(event)
     end
 end
 
+local on_interface_rendered = function(event)
+    if event.name == "main-menu" then
+        game.render(game.width() // 2 - 13, game.height() // 2, "This is an example string.")
+    end
+end
+
 script.on_event("on_command_executed", on_command_executed)
+script.on_event("on_interface_rendered", on_interface_rendered)
