@@ -15,7 +15,7 @@ Interface* interface_create(const char* name, usize commands_count)
     return inf;
 }
 
-Command* interface_get_command(Interface* inf, usize index)
+Command* interface_get_command(const Interface* inf, usize index)
 {
     return &inf->commands[index];
 }
