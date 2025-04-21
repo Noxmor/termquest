@@ -18,4 +18,6 @@ void mod_list_load(ModList* mod_list);
 
 void mod_list_execute_command(ModList* mod_list, const Command* cmd);
 
+void mod_list_render_interface(ModList* mod_list, const Interface* inf);
+
 #endif

@@ -120,6 +120,8 @@ static void interface_render(const Interface* inf)
     {
         tb_change_cell(game_state.margin_x + i - 1, y, 0x2500, TB_WHITE, TB_BLACK);
     }
+
+    mod_list_render_interface(&mod_list, inf);
 }
 
 void termquest_push_interface(Interface* inf)
@@ -169,6 +171,21 @@ static void termquest_interface_move_down(void)
 void termquest_create_save_file(const char* name)
 {
     // TODO: Create save file and initialize new save
+}
+
+u32 termquest_width(void)
+{
+    return tb_width() - 2 * game_state.margin_x;
+}
+
+u32 termquest_height(void)
+{
+    return tb_height() - 2 * game_state.margin_y - game_state.command_box_height - 5;
+}
+
+void termquest_render(i32 x, i32 y, const char* str)
+{
+    render_string(x + game_state.margin_x + 1, y + game_state.margin_y + 3, str);
 }
 
 void termquest_execute_command(void)

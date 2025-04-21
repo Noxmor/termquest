@@ -178,6 +178,33 @@ static int game_create_save_file(lua_State* L)
     return 0;
 }
 
+static int game_render(lua_State* L)
+{
+    i32 x = lua_tointeger(L, 1);
+    i32 y = lua_tointeger(L, 2);
+    const char* str = luaL_checkstring(L, 3);
+
+    termquest_render(x, y, str);
+
+    return 0;
+}
+
+static int game_width(lua_State* L)
+{
+    u32 width = termquest_width();
+    lua_pushinteger(L, width);
+
+    return 1;
+}
+
+static int game_height(lua_State* L)
+{
+    u32 height = termquest_height();
+    lua_pushinteger(L, height);
+
+    return 1;
+}
+
 void mod_init(Mod* mod, const char* filepath)
 {
     mod->filepath = filepath;
@@ -235,6 +262,12 @@ void mod_load(Mod* mod)
     lua_setfield(L, -2, "push_interface");
     lua_pushcfunction(L, &game_pop_interface);
     lua_setfield(L, -2, "pop_interface");
+    lua_pushcfunction(L, &game_render);
+    lua_setfield(L, -2, "render");
+    lua_pushcfunction(L, &game_width);
+    lua_setfield(L, -2, "width");
+    lua_pushcfunction(L, &game_height);
+    lua_setfield(L, -2, "height");
     lua_setglobal(L, "game");
 
     lua_pushlightuserdata(L, mod);
@@ -263,6 +296,23 @@ void mod_execute_command(Mod* mod, const Command* cmd)
             lua_setfield(L, -2, "name");
             lua_pushstring(L, cmd->id);
             lua_setfield(L, -2, "id");
+            lua_pcall(L, 1, 0, 0);
+        }
+    }
+}
+
+void mod_render_interface(Mod* mod, const Interface* inf)
+{
+    for (usize i = 0; i < list_size(&mod->event_listeners); ++i)
+    {
+        EventListener* listener = list_get(&mod->event_listeners, i);
+        if (strcmp(listener->event_name, "on_interface_rendered") == 0)
+        {
+            lua_State* L = mod->script;
+            lua_rawgeti(L, LUA_REGISTRYINDEX, listener->callback);
+            lua_newtable(L);
+            lua_pushstring(L, inf->name);
+            lua_setfield(L, -2, "name");
             lua_pcall(L, 1, 0, 0);
         }
     }

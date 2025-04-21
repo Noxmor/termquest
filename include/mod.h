@@ -4,6 +4,7 @@
 #include "types.h"
 #include "list.h"
 #include "command.h"
+#include "interface.h"
 
 typedef struct lua_State lua_State;
 
@@ -22,5 +23,7 @@ void mod_init(Mod* mod, const char* filepath);
 void mod_load(Mod* mod);
 
 void mod_execute_command(Mod* mod, const Command* cmd);
+
+void mod_render_interface(Mod* mod, const Interface* inf);
 
 #endif
