@@ -1,6 +1,5 @@
-# Binaries
-bin/
-bin-int/
+# Rust
+/target
 
-# cbrew
-.cbrew/
+# Logs
+*.log
